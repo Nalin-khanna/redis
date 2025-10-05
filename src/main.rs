@@ -10,14 +10,12 @@ fn main() {
             Ok(mut _stream) => {
                 println!("accepted new connection");
                 let mut buffer = [0;1024];
-                let n = _stream.read(& mut buffer);
-                match n {
-                    Ok(n) => {
-                        _stream.write_all(b"+PONG\r\n").unwrap();
+                loop {
+                    let n = _stream.read(&mut buffer).unwrap();
+                    if n == 0 {
+                        break;
                     }
-                    Err(err) => {
-                        print!("error : {} " , err);
-                    }
+                    _stream.write_all(b"+PONG\r\n").unwrap();
                 }
             }
             Err(e) => {
